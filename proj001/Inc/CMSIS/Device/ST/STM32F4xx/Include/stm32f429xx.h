@@ -10589,7 +10589,7 @@ typedef struct
 #define RCC_PLLCFGR_PLLQ_0                 (0x1UL << RCC_PLLCFGR_PLLQ_Pos)      /*!< 0x01000000 */
 #define RCC_PLLCFGR_PLLQ_1                 (0x2UL << RCC_PLLCFGR_PLLQ_Pos)      /*!< 0x02000000 */
 #define RCC_PLLCFGR_PLLQ_2                 (0x4UL << RCC_PLLCFGR_PLLQ_Pos)      /*!< 0x04000000 */
-#define RCC_PLLCFGR_PLLQ_3                 (0x8UL << RCC_PLLCFGR_PLLQ_Pos)      /*!< 0x08000000 */
+#define RCC_PLLCFGR_PLLQ_3                 (0x3UL << RCC_PLLCFGR_PLLQ_Pos)      /*!< 0x03000000 */
 
 
 /********************  Bit definition for RCC_CFGR register  ******************/

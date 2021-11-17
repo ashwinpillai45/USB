@@ -1,0 +1,23 @@
+/**
+ ******************************************************************************
+ * @file           : main.c
+ * @author         : Ashwin Pillai
+ * @brief          : Main program body (Application Layer)
+ ******************************************************************************
+
+ *
+ ******************************************************************************
+ */
+
+#include <stdint.h>
+#include "main.h"
+#include " Helper/logger.h"
+
+
+
+int main(void)
+{
+	logInfo("Program Entry Point");
+    /* Loop forever */
+	for(;;);
+}

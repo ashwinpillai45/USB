@@ -11,11 +11,13 @@
 
 #include <stdint.h>
 #include "main.h"
+#include "Helper/logger.h"
 
 
 
 int main(void)
 {
+	logInfo("Program Entry Point");
     /* Loop forever */
 	for(;;);
 }

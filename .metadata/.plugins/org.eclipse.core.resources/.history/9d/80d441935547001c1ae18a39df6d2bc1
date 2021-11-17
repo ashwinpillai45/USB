@@ -1,0 +1,34 @@
+/*
+ * systemconfig.c
+ *
+ *  Created on: Nov 16, 2021
+ *      Author: ashwin pillai
+ */
+
+#include "main.h"
+#include "stm32f4xx.h"
+#include "stm32f429xx.h"
+/*
+ * @param : void
+ * @return : void
+ * @description : In this func we will be using hse as clock source for pll to generate
+ *                the below mentioned values. The idea is to generate 48MHz of clock
+ *                for comms.
+ *                PLLM = 4 PLLN = 72 PLLP = 2 PLLQ = 3 AHBP = 1 APB1 = 2 APB2 = 1
+ *
+*/
+static void clock_config(void)
+{
+//Configuring the flash latency for HCLK = 72MHz
+	MODIFY_REG(FLASH->ACR,FLASH_ACR_LATENCY,_VAL2FLD(FLASH_ACR_LATENCY,FLASH_ACR_LATENCY_2WS));
+//Enabling HSE
+	SET_BIT(RCC->CR,RCC_CR_HSEON);
+//Configuring PLL
+	MODIFY_REG(RCC->PLLCFGR , , );
+
+}
+
+void SystemInit(void)
+{
+clock_config();
+}
