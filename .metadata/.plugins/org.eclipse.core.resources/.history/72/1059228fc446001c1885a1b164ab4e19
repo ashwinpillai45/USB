@@ -1,0 +1,26 @@
+/*
+ * logger.c
+ *
+ *  Created on: Nov 16, 2021
+ *      Author: ashwin pillai
+ */
+
+#include "Helper/logger.h"
+
+
+
+void logError(char const * const format, ...)
+{
+	va_list args;
+	va_start
+}
+
+void logInfo()
+{
+
+}
+
+void logDebug()
+{
+
+}

@@ -1,0 +1,2 @@
+systemconfig.c:19:13:clock_config	4	static
+systemconfig.c:24:6:SystemInit	8	static

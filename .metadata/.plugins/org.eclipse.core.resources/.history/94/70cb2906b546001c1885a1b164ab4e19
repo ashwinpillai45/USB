@@ -1,0 +1,18 @@
+/*
+ * systemconfig.c
+ *
+ *  Created on: Nov 16, 2021
+ *      Author: ashwin pillai
+ */
+
+#include "main.h"
+
+void clock_config(void)
+{
+
+}
+
+void SystemInit(void)
+{
+
+}

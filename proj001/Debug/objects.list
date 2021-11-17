@@ -1,0 +1,4 @@
+"./Src/Helper/logger.o"
+"./Src/main.o"
+"./Src/systemconfig.o"
+"./Startup/startup_stm32f429zitx.o"
