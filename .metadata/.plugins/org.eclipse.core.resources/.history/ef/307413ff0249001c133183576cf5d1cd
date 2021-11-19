@@ -1,0 +1,34 @@
+#include "usbDriver.h"
+
+void usb_gpio_init(void)
+{
+	//enable clock to the gpio pin
+	SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN);
+
+	//configure the pb14 and pb15 as alternate mode
+	MODIFY_REG(GPIOB->MODER,
+			GPIO_MODER_MODER14 | GPIO_MODER_MODER15 ,
+			GPIO_MODER_MODER14_1 | GPIO_MODER_MODER15_1);
+
+	//usb pins D+ and D- are in alternate function  mode
+	MODIFY_REG(GPIOB->AFR[1],
+			GPIO_AFRH_AFSEL14 | GPIO_AFRH_AFSEL15,
+			_VAL2FLD(GPIO_AFRH_AFSEL14,0xCUL) | _VAL2FLD(GPIO_AFRH_AFSEL15,0xCUL));
+
+}
+
+void usb_core_init(void)
+{
+	//Enable clock to usb otg hs module
+	SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_OTGHSEN);
+
+	//Unmask the Global Interrupt Line assertion to the core.
+	MODIFY_REG(USB_OTG_HS_GLOBAL->GAHBCFG,
+			USB_OTG_GAHBCFG_GINT,
+			_VAL2FLD(USB_OTG_GAHBCFG_GINT,0x1UL));
+
+	//Selecting USB2.0 High Speed and forcing the device to peripheral mode. Also setting the trdt value as specified in the manual
+	MODIFY_REG(USB_OTG_HS_GLOBAL->GUSBCFG ,
+			USB_OTG_GUSBCFG_PHYSEL | USB_OTG_GUSBCFG_TRDT | USB_OTG_GUSBCFG_FDMOD ,
+			);
+}

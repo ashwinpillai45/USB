@@ -1,0 +1,23 @@
+#include "usbDriver.h"
+
+void usb_gpio_init(void)
+{
+	//enable clock to the gpio pin
+	SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN);
+
+	//configure the pb14 and pb15 as alternate mode
+	MODIFY_REG(GPIOB->MODER,
+			GPIO_MODER_MODER14 | GPIO_MODER_MODER15 ,
+			GPIO_MODER_MODER14_1 | GPIO_MODER_MODER15_1);
+
+	//usb pins D+ and D- are in alternate function  mode
+	MODIFY_REG(GPIOB->AFR[1],
+			GPIO_AFRH_AFSEL14 | GPIO_AFRH_AFSEL15,
+			_VAL2FLD(GPIO_AFRH_AFSEL14,0xCUL) | _VAL2FLD(GPIO_AFRH_AFSEL15,0xCUL));
+
+}
+
+void usb_core_init(void)
+{
+
+}

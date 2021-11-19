@@ -6,15 +6,21 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Src/main.c \
-../Src/systemconfig.c 
+../Src/systemconfig.c \
+../Src/usbDriver.c \
+../Src/usbFramework.c 
 
 OBJS += \
 ./Src/main.o \
-./Src/systemconfig.o 
+./Src/systemconfig.o \
+./Src/usbDriver.o \
+./Src/usbFramework.o 
 
 C_DEPS += \
 ./Src/main.d \
-./Src/systemconfig.d 
+./Src/systemconfig.d \
+./Src/usbDriver.d \
+./Src/usbFramework.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

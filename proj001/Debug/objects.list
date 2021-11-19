@@ -1,4 +1,6 @@
 "./Src/Helper/logger.o"
 "./Src/main.o"
 "./Src/systemconfig.o"
+"./Src/usbDriver.o"
+"./Src/usbFramework.o"
 "./Startup/startup_stm32f429zitx.o"

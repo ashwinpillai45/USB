@@ -1,0 +1,5 @@
+usbDriver.c:3:6:usb_gpio_init	4	static
+usbDriver.c:20:6:usb_core_init	4	static
+usbDriver.c:41:6:device_core_init	4	static
+usbDriver.c:62:6:connect_usb	4	static
+usbDriver.c:71:6:disconnect_usb	4	static

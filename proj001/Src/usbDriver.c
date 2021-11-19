@@ -1,0 +1,78 @@
+#include "usbDriver.h"
+
+void usb_gpio_init(void)
+{
+	//enable clock to the gpio pin
+	SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN);
+
+	//configure the pb14 and pb15 as alternate mode
+	MODIFY_REG(GPIOB->MODER,
+			GPIO_MODER_MODER14 | GPIO_MODER_MODER15 ,
+			GPIO_MODER_MODER14_1 | GPIO_MODER_MODER15_1);
+
+	//usb pins D+ and D- are in alternate function  mode
+	MODIFY_REG(GPIOB->AFR[1],
+			GPIO_AFRH_AFSEL14 | GPIO_AFRH_AFSEL15,
+			_VAL2FLD(GPIO_AFRH_AFSEL14,0xCUL) | _VAL2FLD(GPIO_AFRH_AFSEL15,0xCUL));
+
+}
+
+void usb_core_init(void)
+{
+	//Enable clock to usb otg hs module
+	SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_OTGHSEN);
+
+	//Unmask the Global Interrupt Line assertion to the core.
+	MODIFY_REG(USB_OTG_HS_GLOBAL->GAHBCFG,
+			USB_OTG_GAHBCFG_GINT,
+			_VAL2FLD(USB_OTG_GAHBCFG_GINT,0x1UL));
+
+	//Selecting USB2.0 High Speed and forcing the device to peripheral mode. Also setting the trdt value as specified in the manual
+	MODIFY_REG(USB_OTG_HS_GLOBAL->GUSBCFG,
+			USB_OTG_GUSBCFG_PHYSEL | USB_OTG_GUSBCFG_TRDT | USB_OTG_GUSBCFG_FDMOD,
+			USB_OTG_GUSBCFG_PHYSEL | _VAL2FLD(USB_OTG_GUSBCFG_TRDT,0x9UL) | USB_OTG_GUSBCFG_FDMOD);
+
+	//Unmasking mode mismatch, otg interrupt and rx buffer full mask
+	MODIFY_REG(USB_OTG_HS_GLOBAL->GINTMSK,
+			USB_OTG_GINTMSK_MMISM | USB_OTG_GINTMSK_OTGINT | USB_OTG_GINTMSK_RXFLVLM,
+			USB_OTG_GINTMSK_MMISM | USB_OTG_GINTMSK_OTGINT | USB_OTG_GINTMSK_RXFLVLM);
+}
+
+void device_core_init()
+{
+	//Setting the device to use the internal embedded PHY layer and in Full Speed mode
+	MODIFY_REG(USB_OTG_HS_DEVICE->DCFG,
+			USB_OTG_DCFG_DSPD,
+			_VAL2FLD(USB_OTG_DCFG_DSPD,0x3UL));
+
+	//Clearing all the registers
+		WRITE_REG(USB_OTG_HS_GLOBAL->GINTMSK,0xFFFFFFFFUL);
+
+	//Unmasking the following interrupts : USB reset, Enumeration done, Early suspend, USB suspend, SOF
+	MODIFY_REG(USB_OTG_HS_GLOBAL->GINTMSK,
+			USB_OTG_GINTMSK_SOFM | USB_OTG_GINTMSK_ESUSPM | USB_OTG_GINTMSK_USBSUSPM | USB_OTG_GINTMSK_USBRST | USB_OTG_GINTMSK_ENUMDNEM,
+			USB_OTG_GINTMSK_SOFM | USB_OTG_GINTMSK_ESUSPM | USB_OTG_GINTMSK_USBSUSPM | USB_OTG_GINTMSK_USBRST | USB_OTG_GINTMSK_ENUMDNEM);
+
+	//Enabling the VBUS Sensing
+	SET_BIT(USB_OTG_HS_GLOBAL->GCCFG,USB_OTG_GCCFG_VBUSASEN);
+
+
+}
+
+void connect_usb(void)
+{
+	//Disabling powerdown
+	SET_BIT(USB_OTG_HS_GLOBAL->GCCFG,USB_OTG_GCCFG_PWRDWN);
+
+	//Disabling soft disconnect
+	CLEAR_BIT(USB_OTG_HS_DEVICE->DCTL,USB_OTG_DCTL_SDIS);
+}
+
+void disconnect_usb(void)
+{
+	//Enabling soft disconnect
+	SET_BIT(USB_OTG_HS_DEVICE->DCTL,USB_OTG_DCTL_SDIS);
+
+	//Enabling powerdown
+	CLEAR_BIT(USB_OTG_HS_GLOBAL->GCCFG,USB_OTG_GCCFG_PWRDWN);
+}
