@@ -8,7 +8,8 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
  /home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h \
  ../Inc/Helper/logger.h ../Inc/usbFramework.h ../Inc/usbDriver.h \
  /home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
- /home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Device/ST/STM32F4xx/Include/stm32f429xx.h
+ /home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Device/ST/STM32F4xx/Include/stm32f429xx.h \
+ ../Inc/usbStandards.h ../Inc/Helper/logger.h
 
 ../Inc/main.h:
 
@@ -35,3 +36,7 @@ Src/main.o: ../Src/main.c ../Inc/main.h \
 /home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
 
 /home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Device/ST/STM32F4xx/Include/stm32f429xx.h:
+
+../Inc/usbStandards.h:
+
+../Inc/Helper/logger.h:

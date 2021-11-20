@@ -1,0 +1,27 @@
+
+
+#ifndef USBSTANDARDS_H_
+#define USBSTANDARDS_H_
+
+#include "stm32f429xx.h"
+
+/*
+ * @brief : returns the address of the register DIEPCTL(x) where x is the in-endpoint number
+ * @return : returns the address of the control register of individual endpoint
+ * @parameters : endpoint_number - The in-endpoint number of whose address you want
+ */
+inline static USB_OTG_INEndpointTypeDef* IEPNT (uint8_t endpoint_number)
+{
+ return ((USB_OTG_INEndpointTypeDef*) ( USB_OTG_IN_ENDPOINT_BASE + ( 0x20 * endpoint_number )));
+}
+/*
+ * @brief : returns the address of the register DIEPCTL(x) where x is the out-endpoint number
+ * @return : returns the address of the control register of individual endpoint
+ * @parameters : endpoint_number - The out-endpoint number of whose address you want
+ */
+inline static USB_OTG_OUTEndpointTypeDef* OEPNT (uint8_t endpoint_number)
+{
+ return ((USB_OTG_OUTEndpointTypeDef*) ( USB_OTG_OUT_ENDPOINT_BASE + ( 0x20 * endpoint_number )));
+}
+
+#endif /* USBSTANDARDS_H_ */

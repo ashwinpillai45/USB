@@ -1,0 +1,13 @@
+
+
+#ifndef USBSTANDARDS_H_
+#define USBSTANDARDS_H_
+
+#include "stm32f429xx.h"
+
+inline static (USB_OTG_INEndpointTypeDef *) iepnt (uint8_t endpoint_number)
+{
+
+}
+
+#endif /* USBSTANDARDS_H_ */
