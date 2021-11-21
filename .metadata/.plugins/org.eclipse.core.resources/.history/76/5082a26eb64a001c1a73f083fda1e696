@@ -62,6 +62,6 @@ typedef struct {
 	void (*flushTXFIFO)(uint8_t endpoint_no);
 }UsbDriver;
 
-extern const UsbDriver usbdriver;
+extern UsbDriver usbdriver;
 
 #endif /* USBDRIVER_H_ */

@@ -1,12 +1,22 @@
-04:55:41 **** Incremental Build of configuration Debug for project proj001 ****
+05:39:38 **** Incremental Build of configuration Debug for project proj001 ****
 make -j4 all 
 arm-none-eabi-gcc "../Src/usbDriver.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32F429I_DISC1 -DSTM32 -DSTM32F429ZITx -DSTM32F4 -DSTM32F429xx -c -I../Inc -I"/home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Device/ST/STM32F4xx/Include" -I"/home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/usbDriver.d" -MT"Src/usbDriver.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/usbDriver.o"
-../Src/usbDriver.c:182:13: warning: 'configure_in_endpoint' defined but not used [-Wunused-function]
-  182 | static void configure_in_endpoint(uint8_t endpoint_no , USBEndPointType eptype , uint8_t endpoint_size)
-      |             ^~~~~~~~~~~~~~~~~~~~~
-../Src/usbDriver.c:163:13: warning: 'configure_endpoint0' defined but not used [-Wunused-function]
-  163 | static void configure_endpoint0(uint8_t endpoint_size)
-      |             ^~~~~~~~~~~~~~~~~~~
+../Src/usbDriver.c: In function 'read_Packet':
+../Src/usbDriver.c:205:21: warning: initialization discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  205 |  uint32_t* rxfifo = FIFO(0);
+      |                     ^~~~
+../Src/usbDriver.c: In function 'write_packet':
+../Src/usbDriver.c:240:21: warning: initialization discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  240 |  uint32_t* txfifo = FIFO(endpoint_no);
+      |                     ^~~~
+../Src/usbDriver.c: In function 'rxflvl_handler':
+../Src/usbDriver.c:362:11: warning: unused variable 'bytecnt' [-Wunused-variable]
+  362 |  uint16_t bytecnt = _FLD2VAL(USB_OTG_GRXSTSP_BCNT,receiveStat);
+      |           ^~~~~~~
+At top level:
+../Src/usbDriver.c:390:13: warning: 'gint_handlers' defined but not used [-Wunused-function]
+  390 | static void gint_handlers(void)
+      |             ^~~~~~~~~~~~~
 arm-none-eabi-gcc -o "proj001.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/ashwin/Documents/usb/usbDev_workspace/proj001/STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="proj001.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: proj001.elf
  
@@ -14,7 +24,7 @@ arm-none-eabi-size   proj001.elf
 arm-none-eabi-objdump -h -S  proj001.elf  > "proj001.list"
 arm-none-eabi-objcopy  -O binary  proj001.elf  "proj001.bin"
    text	   data	    bss	    dec	    hex	filename
-   6044	    108	   1596	   7748	   1e44	proj001.elf
+   5740	    108	   1596	   7444	   1d14	proj001.elf
 Finished building: default.size.stdout
  
 Finished building: proj001.bin

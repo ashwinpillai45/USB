@@ -48,7 +48,7 @@ void usb_core_init(void)
  * @brief : initializing the device core according to the manual
  */
 
-void device_core_init(void)
+void device_core_init()
 {
 	//Setting the device to use the internal embedded PHY layer and in Full Speed mode
 	MODIFY_REG(USB_OTG_HS_DEVICE->DCFG,
@@ -238,7 +238,7 @@ static void read_Packet(uint16_t size,void* buffer)
 static void write_packet(uint16_t size, uint8_t endpoint_no , void const *buffer)
 {
 	uint32_t* txfifo = FIFO(endpoint_no);
-	USB_OTG_INEndpointTypeDef* iepnt = IEPNT(endpoint_no);
+	USB_OTG_INEndpointTypeDef* iepnt = IEPNT(endpoint_number);
 
 	//Configures the transmission
 	MODIFY_REG(iepnt->DIEPTSIZ,
@@ -247,15 +247,16 @@ static void write_packet(uint16_t size, uint8_t endpoint_no , void const *buffer
 
 	//Enabling the transmission after clearing the STALL and NAK of the endpoint
 	MODIFY_REG(iepnt->DIEPCTL,
-			USB_OTG_DIEPCTL_STALL,
-			USB_OTG_DIEPCTL_CNAK | USB_OTG_DIEPCTL_EPENA);
+			USN_OTG_DIEPCTL_STALL,
+			USB_OTG_DIEPCTL_CNAK | USB_OTG_DIEPCTL_EPNA);
+
 	//Convert size into word
 	size = ( size + 3 ) / 4;
 
 	for(;size > 0 ; size-- ,buffer +=4 )
 	{
 		//Pushes the data into the buffer
-		*txfifo = *((uint32_t*)buffer);
+		*fifo = *((uint32_t*)buffer);
 	}
 }
 
@@ -387,7 +388,7 @@ static void rxflvl_handler(void)
  * @brief : the handlers for any usb related interrupts
  */
 
-static void gint_handlers(void)
+void gint_handlers(void)
 {
  volatile uint32_t gint_stat = USB_OTG_HS_GLOBAL->GINTSTS;
 
@@ -417,18 +418,5 @@ static void gint_handlers(void)
 
  }
 }
-
-const UsbDriver usbdriver = {
-		.usb_gpio_init = &usb_gpio_init,
-			.usb_core_init = &usb_core_init,
-			.device_core_init=  &device_core_init,
-			.connect_usb=&connect_usb,
-			.disconnect_usb=&disconnect_usb,
-			.configure_in_endpoint=&configure_in_endpoint,
-			.read_Packet=&read_Packet,
-			.write_packet=&write_packet,
-			.flushRXFIFO=&flushRXFIFO,
-			.flushTXFIFO=&flushTXFIFO
-};
 
 /******************************************END OF PROGRAM*********************************************************/

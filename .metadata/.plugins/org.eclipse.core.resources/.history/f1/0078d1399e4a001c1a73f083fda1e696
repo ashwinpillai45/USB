@@ -48,7 +48,7 @@ void usb_core_init(void)
  * @brief : initializing the device core according to the manual
  */
 
-void device_core_init(void)
+void device_core_init()
 {
 	//Setting the device to use the internal embedded PHY layer and in Full Speed mode
 	MODIFY_REG(USB_OTG_HS_DEVICE->DCFG,
@@ -194,73 +194,6 @@ static void configure_in_endpoint(uint8_t endpoint_no , USBEndPointType eptype ,
 }
 
 /*
- * @brief : this function reads the packet
- * @param size : the size of the packet that has to be read
- * @param buffer : the buffer where we store the popped data
- */
-
-static void read_Packet(uint16_t size,void* buffer)
-{
-	//Getting the address of the only rx fifo buffer
-	uint32_t* rxfifo = FIFO(0);
-
-	//Loop to extract data from the fifo one word (32 bit or 4 bytes) at a time
-	for(; size>=4 ; size-=4 , buffer +=4)
-	{
-		//popping data from the fifo and storing it in a variable
-		uint32_t data = *rxfifo;
-		//storing the popped data from the fifo to the buffer to get the data
-		*((uint32_t*) buffer) = data;
-	}
-
-	//This are executes only if the size of the data is not a multiple of 32 bits or 4 bytes
-	if (size > 0)
-		{
-			//Pops the data one byte at a time
-			uint32_t data = *rxfifo;
-
-			//Manipulating the data so we can get the correct order
-			for( ; size>0 ; size-- , buffer++ , data >>= 8)
-			{
-				//Storing the data in the buffer with the correct alignment
-				*((uint8_t*)buffer) = 0xFF & data;
-			}
-		}
-}
-
-/*
- * @brief : This function is used to send the data
- * @param size: The size of the packet that has to sent in bytes
- * @param endpoint_no : the end point number from which you have to send the data
- * @param buffer : The data you want to send from your device
- */
-
-static void write_packet(uint16_t size, uint8_t endpoint_no , void const *buffer)
-{
-	uint32_t* txfifo = FIFO(endpoint_no);
-	USB_OTG_INEndpointTypeDef* iepnt = IEPNT(endpoint_no);
-
-	//Configures the transmission
-	MODIFY_REG(iepnt->DIEPTSIZ,
-			USB_OTG_DIEPTSIZ_PKTCNT | USB_OTG_DIEPTSIZ_XFRSIZ,
-			_VAL2FLD(USB_OTG_DIEPTSIZ_PKTCNT,1) | _VAL2FLD(USB_OTG_DIEPTSIZ_XFRSIZ,size));
-
-	//Enabling the transmission after clearing the STALL and NAK of the endpoint
-	MODIFY_REG(iepnt->DIEPCTL,
-			USB_OTG_DIEPCTL_STALL,
-			USB_OTG_DIEPCTL_CNAK | USB_OTG_DIEPCTL_EPENA);
-	//Convert size into word
-	size = ( size + 3 ) / 4;
-
-	for(;size > 0 ; size-- ,buffer +=4 )
-	{
-		//Pushes the data into the buffer
-		*txfifo = *((uint32_t*)buffer);
-	}
-}
-
-
-/*
  * @brief : flush the rx fifo after use
  */
 
@@ -325,7 +258,8 @@ static void deconfigure_in_endpoint(uint8_t endpoint_no )
  * @brief : the reset handler for usb_rst
  */
 
-static void usb_rst_handler(void)
+
+void usb_rst_handler(void)
 {
 	logInfo("USB reset occurred");
 	for(uint8_t i =0; i<=MAXENDPOINT;i++)
@@ -335,59 +269,10 @@ static void usb_rst_handler(void)
 }
 
 /*
- * @brief : the interupt handler for usb enumeration done
- */
-
-static void enum_done_handler(void)
-{
-	logInfo("USB eneumeration done");
-	configure_endpoint0(8);					//for now we will hardcode the maximum packet size to be 8 bytes
-}
-
-/*
- * @brief : the interrupt handler for rx fifo full
- */
-
-static void rxflvl_handler(void)
-{
-	logInfo("RX FIFO full");
-
-	//reading the value of rx status register and storing it in a variable
-	uint32_t receiveStat = USB_OTG_HS_GLOBAL->GRXSTSP;
-
-	//storing from which end point we got the interrupt signal
-	uint8_t endpoint_no = _FLD2VAL(USB_OTG_GRXSTSP_EPNUM,receiveStat);
-
-	//storing number of bytes received from the host
-	uint16_t bytecnt = _FLD2VAL(USB_OTG_GRXSTSP_BCNT,receiveStat);
-
-	//storing the packet status to monitor the status
-	uint8_t pktsts = _FLD2VAL(USB_OTG_GRXSTSP_PKTSTS, receiveStat);
-
-	switch(pktsts)
-	{
-	case 0x02:								//OUT data packet received
-
-		break;
-	case 0x06 : 							//SETUP packet received
-
-		break;
-	case 0x03 : 							//OUT transfer completed
-		SET_BIT(OEPNT(endpoint_no)->DOEPCTL,
-					USB_OTG_DOEPCTL_CNAK | USB_OTG_DOEPCTL_EPENA);    //re-enabling the end point after the core disables it
-		break;
-	case 0x04 : 							//SETUP transfer completed
-		SET_BIT(OEPNT(endpoint_no)->DOEPCTL,
-					USB_OTG_DOEPCTL_CNAK | USB_OTG_DOEPCTL_EPENA);	  //re-enabling the end point after the core disables it
-		break;
-	}
-}
-
-/*
  * @brief : the handlers for any usb related interrupts
  */
 
-static void gint_handlers(void)
+void gint_handlers(void)
 {
  volatile uint32_t gint_stat = USB_OTG_HS_GLOBAL->GINTSTS;
 
@@ -398,13 +283,13 @@ static void gint_handlers(void)
  }
  else if(gint_stat & USB_OTG_GINTSTS_ENUMDNE)		//enumeration done handler
  {
-	 enum_done_handler();
-	 SET_BIT(USB_OTG_HS_GLOBAL->GINTSTS,USB_OTG_GINTSTS_ENUMDNE);    //clearing the interrupt flag
+
+
  }
  else if(gint_stat & USB_OTG_GINTSTS_RXFLVL)		//receive fifo empty handler
  {
-	 rxflvl_handler();
-	 SET_BIT(USB_OTG_HS_GLOBAL->GINTSTS,USB_OTG_GINTSTS_RXFLVL);	//clearing the interrupt flag
+
+
  }
  else if(gint_stat & USB_OTG_GINTSTS_IEPINT)		//in end point handler
  {
@@ -417,18 +302,3 @@ static void gint_handlers(void)
 
  }
 }
-
-const UsbDriver usbdriver = {
-		.usb_gpio_init = &usb_gpio_init,
-			.usb_core_init = &usb_core_init,
-			.device_core_init=  &device_core_init,
-			.connect_usb=&connect_usb,
-			.disconnect_usb=&disconnect_usb,
-			.configure_in_endpoint=&configure_in_endpoint,
-			.read_Packet=&read_Packet,
-			.write_packet=&write_packet,
-			.flushRXFIFO=&flushRXFIFO,
-			.flushTXFIFO=&flushTXFIFO
-};
-
-/******************************************END OF PROGRAM*********************************************************/

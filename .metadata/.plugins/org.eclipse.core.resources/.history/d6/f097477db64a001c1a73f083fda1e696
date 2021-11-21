@@ -2,7 +2,7 @@
 /*
  * @brief : initializing the gpio pins for usb hs communication ie., pb14 (D+) and pb15 (D-)
  */
-void usb_gpio_init(void)
+static void usb_gpio_init(void)
 {
 	//enable clock to the gpio pin
 	SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN);
@@ -23,7 +23,7 @@ void usb_gpio_init(void)
  *  @brief : core initialization for usb according to the user manual
  */
 
-void usb_core_init(void)
+static void usb_core_init(void)
 {
 	//Enable clock to usb otg hs module
 	SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_OTGHSEN);
@@ -48,7 +48,7 @@ void usb_core_init(void)
  * @brief : initializing the device core according to the manual
  */
 
-void device_core_init(void)
+static void device_core_init(void)
 {
 	//Setting the device to use the internal embedded PHY layer and in Full Speed mode
 	MODIFY_REG(USB_OTG_HS_DEVICE->DCFG,
@@ -75,7 +75,7 @@ void device_core_init(void)
  * @brief : enabling the trans-receivers and disabling the power down to enable usb communication
  */
 
-void connect_usb(void)
+static void connect_usb(void)
 {
 	//Disabling powerdown
 	SET_BIT(USB_OTG_HS_GLOBAL->GCCFG,USB_OTG_GCCFG_PWRDWN);
@@ -88,7 +88,7 @@ void connect_usb(void)
  * @brief : disabling the trans-receivers and enabling the power down mode
  */
 
-void disconnect_usb(void)
+static void disconnect_usb(void)
 {
 	//Enabling soft disconnect
 	SET_BIT(USB_OTG_HS_DEVICE->DCTL,USB_OTG_DCTL_SDIS);
@@ -238,7 +238,7 @@ static void read_Packet(uint16_t size,void* buffer)
 static void write_packet(uint16_t size, uint8_t endpoint_no , void const *buffer)
 {
 	uint32_t* txfifo = FIFO(endpoint_no);
-	USB_OTG_INEndpointTypeDef* iepnt = IEPNT(endpoint_no);
+	USB_OTG_INEndpointTypeDef* iepnt = IEPNT(endpoint_number);
 
 	//Configures the transmission
 	MODIFY_REG(iepnt->DIEPTSIZ,
@@ -247,15 +247,16 @@ static void write_packet(uint16_t size, uint8_t endpoint_no , void const *buffer
 
 	//Enabling the transmission after clearing the STALL and NAK of the endpoint
 	MODIFY_REG(iepnt->DIEPCTL,
-			USB_OTG_DIEPCTL_STALL,
-			USB_OTG_DIEPCTL_CNAK | USB_OTG_DIEPCTL_EPENA);
+			USN_OTG_DIEPCTL_STALL,
+			USB_OTG_DIEPCTL_CNAK | USB_OTG_DIEPCTL_EPNA);
+
 	//Convert size into word
 	size = ( size + 3 ) / 4;
 
 	for(;size > 0 ; size-- ,buffer +=4 )
 	{
 		//Pushes the data into the buffer
-		*txfifo = *((uint32_t*)buffer);
+		*fifo = *((uint32_t*)buffer);
 	}
 }
 

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="DOEPCTL"/>
+		<item key="selection" value="DIEPCTL"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="DIEPCTL"/>
+			<item value="GRXSTSP"/>
+			<item value="GRXSTP"/>
 			<item value="DOEPCTL"/>
 			<item value="USB_OTG_GINTMSK_IEPINT"/>
 			<item value="USB_OTG"/>
@@ -20,9 +23,6 @@
 			<item value="DOEPMSK"/>
 			<item value="GRSTCTL"/>
 			<item value="NPTX"/>
-			<item value="NPTFX"/>
-			<item value="DIEPTXF"/>
-			<item value="DIEPTXF0"/>
 		</list>
 		<list key="replacehistory">
 		</list>
