@@ -14,12 +14,6 @@
 #define USB_OTG_HS_PCGCCTL      ((uint32_t *)(USB_OTG_HS_PERIPH_BASE + USB_OTG_PCGCCTL_BASE)) //Address of power and clock gating control register
 #define MAXENDPOINT 			6                   //Maximum number of endpoints possible in STM32F429ZI
 
-void usb_gpio_init(void);
-void usb_core_init(void);
-void device_core_init(void);
-void connect_usb(void);
-void disconnect_usb(void);
-
 /*
  * @brief : returns the address of the register DIEPCTL(x) where x is the in-endpoint number
  * @return : returns the address of the control register of individual end point
@@ -55,13 +49,16 @@ typedef struct {
 	void (*device_core_init)(void);
 	void (*connect_usb)(void);
 	void (*disconnect_usb)(void);
+	void (*setAddress)(uint8_t add);
 	void (*configure_in_endpoint)(uint8_t endpoint_no , USBEndPointType eptype , uint8_t endpoint_size);
 	void (*read_Packet)(uint16_t size,void* buffer);
 	void (*write_packet)(uint16_t size, uint8_t endpoint_no , void const *buffer);
 	void (*flushRXFIFO)(void);
 	void (*flushTXFIFO)(uint8_t endpoint_no);
+	void (*polling)(void);
 }UsbDriver;
 
 extern const UsbDriver usbdriver;
+extern usbevent usbe;
 
 #endif /* USBDRIVER_H_ */

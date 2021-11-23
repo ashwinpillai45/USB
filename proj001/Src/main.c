@@ -13,13 +13,20 @@
 #include "main.h"
 #include "Helper/logger.h"
 #include "usbFramework.h"
+#include "usbDevice.h"
 
-
+USBDevice usbdevice;
+uint32_t buffer[8];
 int main(void)
 {
 	logInfo("Program Entry Point");
-    usb_init();
+	usbdevice.out_buffer = &buffer;
+    usb_init(&usbdevice);
     logInfo("Program finished. Entering loop");
     /* Loop forever */
-	for(;;);
+	for(;;)
+	{
+		polling_FW();
+
+	}
 }

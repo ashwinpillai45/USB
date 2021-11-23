@@ -1,0 +1,32 @@
+
+
+#ifndef USBSTANDARDS_H_
+#define USBSTANDARDS_H_
+
+#include "stm32f429xx.h"
+
+typedef enum USBEndPointType{
+		USB_EPTYPE_CONTROL,
+		USB_EPTYPE_ISOCHRONOUS,
+		USB_EPTYPE_BULK,
+		USB_EPTYPE_INTERRUPT
+}USBEndPointType;
+
+typedef struct USBEventType{
+	void (*on_usb_reset)(void);
+	void (*on_setup_packet_received)(uint8_t endpoint_no,uint16_t bcnt);
+	void (*on_out_data_received)(uint8_t endpoint_no,uint16_t bcnt);
+	void (*on_in_transfer_complete)(uint8_t endpoint_no);
+	void (*on_out_transfer_complete)(uint8_t endpoint_no);
+	void (*on_usb_polled)();
+}usbevent;
+
+typedef enum USBDeviceState {
+	USB_DEFAULT,
+	USB_ADDRESS,
+	USB_CONFIGURED,
+	USB_SUSPENDED
+}usbdevice;
+};
+
+#endif /* USBSTANDARDS_H_ */

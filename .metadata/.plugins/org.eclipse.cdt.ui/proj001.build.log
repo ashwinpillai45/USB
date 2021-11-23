@@ -1,22 +1,21 @@
-05:39:38 **** Incremental Build of configuration Debug for project proj001 ****
+06:34:39 **** Incremental Build of configuration Debug for project proj001 ****
 make -j4 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32F429I_DISC1 -DSTM32 -DSTM32F429ZITx -DSTM32F4 -DSTM32F429xx -c -I../Inc -I"/home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Device/ST/STM32F4xx/Include" -I"/home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
 arm-none-eabi-gcc "../Src/usbDriver.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32F429I_DISC1 -DSTM32 -DSTM32F429ZITx -DSTM32F4 -DSTM32F429xx -c -I../Inc -I"/home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Device/ST/STM32F4xx/Include" -I"/home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/usbDriver.d" -MT"Src/usbDriver.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/usbDriver.o"
+arm-none-eabi-gcc "../Src/usbFramework.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32F429I_DISC1 -DSTM32 -DSTM32F429ZITx -DSTM32F4 -DSTM32F429xx -c -I../Inc -I"/home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Device/ST/STM32F4xx/Include" -I"/home/ashwin/Documents/usb/usbDev_workspace/proj001/Inc/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/usbFramework.d" -MT"Src/usbFramework.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/usbFramework.o"
 ../Src/usbDriver.c: In function 'read_Packet':
-../Src/usbDriver.c:205:21: warning: initialization discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
-  205 |  uint32_t* rxfifo = FIFO(0);
+../Src/usbDriver.c:215:21: warning: initialization discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  215 |  uint32_t* rxfifo = FIFO(0);
       |                     ^~~~
 ../Src/usbDriver.c: In function 'write_packet':
-../Src/usbDriver.c:240:21: warning: initialization discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
-  240 |  uint32_t* txfifo = FIFO(endpoint_no);
+../Src/usbDriver.c:250:21: warning: initialization discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  250 |  uint32_t* txfifo = FIFO(endpoint_no);
       |                     ^~~~
-../Src/usbDriver.c: In function 'rxflvl_handler':
-../Src/usbDriver.c:362:11: warning: unused variable 'bytecnt' [-Wunused-variable]
-  362 |  uint16_t bytecnt = _FLD2VAL(USB_OTG_GRXSTSP_BCNT,receiveStat);
-      |           ^~~~~~~
-At top level:
-../Src/usbDriver.c:390:13: warning: 'gint_handlers' defined but not used [-Wunused-function]
-  390 | static void gint_handlers(void)
-      |             ^~~~~~~~~~~~~
+../Src/usbFramework.c: In function 'setup_data_received_handler':
+../Src/usbFramework.c:36:46: warning: passing argument 2 of 'usbdriver.read_Packet' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+   36 |  usbdriver.read_Packet(bcnt,usbdevice_Handler->out_buffer);
+      |                             ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+../Src/usbFramework.c:36:46: note: expected 'void *' but argument is of type 'const void *'
 arm-none-eabi-gcc -o "proj001.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/ashwin/Documents/usb/usbDev_workspace/proj001/STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="proj001.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: proj001.elf
  
@@ -24,7 +23,7 @@ arm-none-eabi-size   proj001.elf
 arm-none-eabi-objdump -h -S  proj001.elf  > "proj001.list"
 arm-none-eabi-objcopy  -O binary  proj001.elf  "proj001.bin"
    text	   data	    bss	    dec	    hex	filename
-   5740	    108	   1596	   7444	   1d14	proj001.elf
+   7972	    132	   1652	   9756	   261c	proj001.elf
 Finished building: default.size.stdout
  
 Finished building: proj001.bin
@@ -32,5 +31,5 @@ Finished building: proj001.bin
 Finished building: proj001.list
  
 
-05:39:40 Build Finished. 0 errors, 4 warnings. (took 1s.954ms)
+06:34:40 Build Finished. 0 errors, 3 warnings. (took 1s.527ms)
 

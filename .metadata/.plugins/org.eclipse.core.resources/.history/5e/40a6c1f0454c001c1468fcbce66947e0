@@ -1,0 +1,15 @@
+
+
+#ifndef USBSTANDARDS_H_
+#define USBSTANDARDS_H_
+
+#include "stm32f429xx.h"
+
+typedef enum USBEndPointType{
+		USB_EPTYPE_CONTROL,
+		USB_EPTYPE_ISOCHRONOUS,
+		USB_EPTYPE_BULK,
+		USB_EPTYPE_INTERRUPT
+}USBEndPointType;
+
+#endif /* USBSTANDARDS_H_ */

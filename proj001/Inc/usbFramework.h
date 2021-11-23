@@ -9,8 +9,10 @@
 #define USBFRAMEWORK_H_
 
 #include "usbDriver.h"
+#include "usbDevice.h"
+#include "usbStandards.h"
 
-void usb_init(void);
-
+void usb_init(USBDevice *usbdevice);
+void polling_FW(void);
 
 #endif /* USBFRAMEWORK_H_ */

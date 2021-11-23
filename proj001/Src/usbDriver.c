@@ -2,7 +2,7 @@
 /*
  * @brief : initializing the gpio pins for usb hs communication ie., pb14 (D+) and pb15 (D-)
  */
-void usb_gpio_init(void)
+static void usb_gpio_init(void)
 {
 	//enable clock to the gpio pin
 	SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN);
@@ -23,7 +23,7 @@ void usb_gpio_init(void)
  *  @brief : core initialization for usb according to the user manual
  */
 
-void usb_core_init(void)
+static void usb_core_init(void)
 {
 	//Enable clock to usb otg hs module
 	SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_OTGHSEN);
@@ -48,7 +48,7 @@ void usb_core_init(void)
  * @brief : initializing the device core according to the manual
  */
 
-void device_core_init(void)
+static void device_core_init(void)
 {
 	//Setting the device to use the internal embedded PHY layer and in Full Speed mode
 	MODIFY_REG(USB_OTG_HS_DEVICE->DCFG,
@@ -75,7 +75,7 @@ void device_core_init(void)
  * @brief : enabling the trans-receivers and disabling the power down to enable usb communication
  */
 
-void connect_usb(void)
+static void connect_usb(void)
 {
 	//Disabling powerdown
 	SET_BIT(USB_OTG_HS_GLOBAL->GCCFG,USB_OTG_GCCFG_PWRDWN);
@@ -88,13 +88,23 @@ void connect_usb(void)
  * @brief : disabling the trans-receivers and enabling the power down mode
  */
 
-void disconnect_usb(void)
+static void disconnect_usb(void)
 {
 	//Enabling soft disconnect
 	SET_BIT(USB_OTG_HS_DEVICE->DCTL,USB_OTG_DCTL_SDIS);
 
 	//Enabling powerdown
 	CLEAR_BIT(USB_OTG_HS_GLOBAL->GCCFG,USB_OTG_GCCFG_PWRDWN);
+}
+
+/*
+ * @brief : setting the address of the device for reset purpose
+ * @param add : the address that you want for the device
+ */
+
+static void setAddress(uint8_t add)
+{
+	MODIFY_REG(USB_OTG_HS_DEVICE->DCFG , USB_OTG_DCFG_DAD , _VAL2FLD(USB_OTG_DCFG_DAD,add));
 }
 
 /*
@@ -332,10 +342,11 @@ static void usb_rst_handler(void)
 	{
 	deconfigure_in_endpoint(i);
 	}
+	usbe.on_usb_reset();
 }
 
 /*
- * @brief : the interupt handler for usb enumeration done
+ * @brief : the interrupt handler for usb enumeration done
  */
 
 static void enum_done_handler(void)
@@ -367,7 +378,7 @@ static void rxflvl_handler(void)
 	switch(pktsts)
 	{
 	case 0x02:								//OUT data packet received
-
+		usbe.on_setup_packet_received(endpoint_no,bytecnt);
 		break;
 	case 0x06 : 							//SETUP packet received
 
@@ -424,11 +435,13 @@ const UsbDriver usbdriver = {
 			.device_core_init=  &device_core_init,
 			.connect_usb=&connect_usb,
 			.disconnect_usb=&disconnect_usb,
+			.setAddress=&setAddress,
 			.configure_in_endpoint=&configure_in_endpoint,
 			.read_Packet=&read_Packet,
 			.write_packet=&write_packet,
 			.flushRXFIFO=&flushRXFIFO,
-			.flushTXFIFO=&flushTXFIFO
+			.flushTXFIFO=&flushTXFIFO,
+			.polling=&gint_handlers
 };
 
 /******************************************END OF PROGRAM*********************************************************/
